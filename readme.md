@@ -1,6 +1,6 @@
 ### Gpx 2 geoJSON
 
-A simple parser that I made for handling parsing of Strava GPX files to geoJSON.
+A simple parser that I made for handling parsing of Strava GPX files to geoJSON, and simplifying the geometry.
 
 This reduces the files a lot and makes it more manageable in a map. The attached GPX file is 223kb, but the geoJSON ends up at less than 4kb, while still retaining most of the information that's required for a map path. GPX files can be huge as my Garmin logs every second, and this is a simple way to reduce the size of the file.
 
