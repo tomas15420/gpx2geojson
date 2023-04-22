@@ -1,37 +1,24 @@
-import GpxParser from "gpxparser";
 import simplify from "simplify-geometry";
+import { gpxParser } from "./gpxParser";
 
-export default function Parser(
-  gpxFile: string,
-  tolerance = 0.0001
-): GeoJSON.FeatureCollection {
-  const gpxParser = new GpxParser();
-
-  try {
-    gpxParser.parse(gpxFile);
-    const geoJson = gpxParser.toGeoJSON();
-    return parseFeatureCollection(geoJson, tolerance);
-  } catch (error) {
-    throw Error("Error parsing GPX file: " + error);
-  }
+export default async function Parser(
+    gpxFile: string,
+    tolerance = 0.0001
+): Promise<GeoJSON.Feature> {
+    try {
+        const geo = await gpxParser(gpxFile);
+        return simplifyFeature(geo, tolerance);
+    } catch (error) {
+        throw Error("Error parsing GPX file: " + error);
+    }
 }
 
 function simplifyFeature(feature: GeoJSON.Feature, tolerance: number) {
-  const { type } = feature.geometry;
-  if (type === "LineString") {
-    let { coordinates } = feature.geometry;
-    coordinates = simplify(coordinates, tolerance);
-    return { ...feature, geometry: { ...feature.geometry, coordinates } };
-  }
-  throw Error("Unsupported geometry type: " + type);
-}
-
-function parseFeatureCollection(
-  geojson: GeoJSON.FeatureCollection,
-  tolerance: number
-): GeoJSON.FeatureCollection {
-  const features = geojson.features.map((feat) =>
-    simplifyFeature(feat, tolerance)
-  );
-  return { ...geojson, features };
+    const { type } = feature.geometry;
+    if (type === "LineString") {
+        let { coordinates } = feature.geometry;
+        coordinates = simplify(coordinates, tolerance);
+        return { ...feature, geometry: { ...feature.geometry, coordinates } };
+    }
+    throw Error("Unsupported geometry type: " + type);
 }
