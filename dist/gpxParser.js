@@ -26,7 +26,7 @@ function gpxParser(gpxString) {
             const lat = parseFloat(wp.getAttribute("lat"));
             const lon = parseFloat(wp.getAttribute("lon"));
             const ele = parseFloat(wp.querySelector("ele").innerHTML);
-            const point = [lat, lon, ele];
+            const point = [lon, lat, ele];
             coordinates.push(point);
         }
         const elevationMax = Math.max(...coordinates.map((c) => c[2]));
