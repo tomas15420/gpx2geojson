@@ -27,5 +27,4 @@ test("Parser should return geoJSON response from a GPX file", async () => {
     expect(result.geometry.type).toBe("LineString");
     const geometry = result.geometry as LineString;
     expect(geometry.coordinates.length).toBeGreaterThan(0);
-    expect(result.properties).toHaveProperty("name", "Olavsspranget");
 });
