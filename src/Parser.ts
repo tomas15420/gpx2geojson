@@ -18,7 +18,8 @@ function simplifyFeature(feature: GeoJSON.Feature, tolerance: number) {
     if (type === "LineString") {
         let { coordinates } = feature.geometry;
         coordinates = simplify(coordinates, tolerance);
-        return { ...feature, geometry: { ...feature.geometry, coordinates } };
+        feature.geometry.coordinates = coordinates;
+        return feature;
     }
     throw Error("Unsupported geometry type: " + type);
 }
