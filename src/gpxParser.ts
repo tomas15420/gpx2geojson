@@ -17,7 +17,7 @@ export async function gpxParser(gpxString: string): Promise<Feature> {
         const lon = parseFloat(wp.getAttribute("lon")!);
         const ele = parseFloat(wp.querySelector("ele")!.innerHTML);
 
-        const point: Position = [lat, lon, ele];
+        const point: Position = [lon, lat, ele];
         coordinates.push(point);
     }
 
