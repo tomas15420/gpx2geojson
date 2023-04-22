@@ -31,7 +31,8 @@ function simplifyFeature(feature, tolerance) {
     if (type === "LineString") {
         let { coordinates } = feature.geometry;
         coordinates = (0, simplify_geometry_1.default)(coordinates, tolerance);
-        return Object.assign(Object.assign({}, feature), { geometry: Object.assign(Object.assign({}, feature.geometry), { coordinates }) });
+        feature.geometry.coordinates = coordinates;
+        return feature;
     }
     throw Error("Unsupported geometry type: " + type);
 }

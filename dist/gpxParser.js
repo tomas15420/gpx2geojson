@@ -13,7 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.gpxParser = void 0;
 const node_html_parser_1 = require("node-html-parser");
 function gpxParser(gpxString) {
-    var _a, _b, _c;
+    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         const parsed = (0, node_html_parser_1.parse)(gpxString);
         const metadata = parsed.querySelector("metadata");
@@ -23,17 +23,40 @@ function gpxParser(gpxString) {
         const coordinates = [];
         for (let key in waypoints) {
             const wp = waypoints[key];
-            const lat = wp.getAttribute("lat");
-            const lon = wp.getAttribute("lon");
-            const ele = (_c = wp.querySelector("ele")) === null || _c === void 0 ? void 0 : _c.innerHTML;
-            if (lat && lon && ele) {
-                const point = [
-                    parseFloat(lon),
-                    parseFloat(lat),
-                    parseFloat(ele),
-                ];
-                coordinates.push(point);
+            const lat = parseFloat(wp.getAttribute("lat"));
+            const lon = parseFloat(wp.getAttribute("lon"));
+            const ele = parseFloat(wp.querySelector("ele").innerHTML);
+            const point = [lat, lon, ele];
+            coordinates.push(point);
+        }
+        const elevationMax = Math.max(...coordinates.map((c) => c[2]));
+        let downHill = 0;
+        let upHill = 0;
+        let distance = 0;
+        for (let i = 0; i < coordinates.length - 1; i++) {
+            // calculate elevation gain/loss
+            const nextEle = coordinates[i + 1][2];
+            const currEle = coordinates[i][2];
+            const diff = nextEle - currEle;
+            if (diff < 0) {
+                downHill += diff;
             }
+            else if (diff > 0) {
+                upHill += diff;
+            }
+            // calculate distance
+            const rad = Math.PI / 180;
+            const currLat = coordinates[i][0];
+            const currLon = coordinates[i][1];
+            const lat1 = currLat * rad;
+            const nextLat = coordinates[i + 1][0];
+            const nextLon = coordinates[i + 1][1];
+            const lat2 = nextLat * rad;
+            const sinLat = Math.sin(((nextLat - currLat) * rad) / 2);
+            const sinLon = Math.sin(((nextLon - currLon) * rad) / 2);
+            const a = sinLat * sinLat + Math.cos(lat1) * Math.cos(lat2) * sinLon * sinLon;
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            distance += 6371000 * c;
         }
         const geoJSON = {
             type: "Feature",
@@ -44,6 +67,10 @@ function gpxParser(gpxString) {
             properties: {
                 name: name,
                 time: time,
+                distance: Math.floor(distance),
+                elevationMax: Math.floor(elevationMax),
+                elevationPos: Math.floor(Math.abs(upHill)),
+                elevationNeg: Math.floor(Math.abs(downHill)),
             },
         };
         return geoJSON;

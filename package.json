@@ -1,13 +1,14 @@
 {
     "name": "@bovan/gpx2geojson",
-    "version": "2.0.0-alpha.3",
+    "version": "2.0.0-alpha.4",
     "description": "A GPX parser that converts the coordinates from Strava GPX file to simplified GeoJSON",
     "main": "dist/index.js",
     "homepage": "https://github.com/bovan/gpx2geojson",
     "scripts": {
         "build": "tsc",
         "test": "jest",
-        "testWatch": "jest --watchAll"
+        "testWatch": "jest --watchAll",
+        "publish": "tsc && npm publish"
     },
     "keywords": [
         "gpx",
