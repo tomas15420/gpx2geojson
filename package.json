@@ -1,6 +1,6 @@
 {
     "name": "@bovan/gpx2geojson",
-    "version": "2.0.0-alpha.1",
+    "version": "2.0.0-alpha.2",
     "description": "A GPX parser that converts the coordinates from Strava GPX file to simplified GeoJSON",
     "main": "dist/index.js",
     "homepage": "https://github.com/bovan/gpx2geojson",
