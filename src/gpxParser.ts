@@ -15,7 +15,11 @@ export async function gpxParser(gpxString: string): Promise<Feature> {
         const wp = waypoints[key];
         const lat = parseFloat(wp.getAttribute("lat")!);
         const lon = parseFloat(wp.getAttribute("lon")!);
-        const ele = parseFloat(wp.querySelector("ele")!.innerHTML);
+        const eleElement = wp.querySelector("ele");
+        let ele = 0;
+        if(eleElement){
+            ele = parseFloat(eleElement.innerHTML);
+        }
 
         const point: Position = [lat, lon, ele];
         coordinates.push(point);
